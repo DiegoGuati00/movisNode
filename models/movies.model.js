@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../utils/database');
 
-const Movis = sequelize.define('movis', {
+const Movies = sequelize.define('movis', {
     id: {
         primaryKey: true,
         autoIncrement: true,
@@ -38,4 +38,4 @@ const Movis = sequelize.define('movis', {
         defaultValue: 'active'
     }
 })
-module.exports = { Movis };
+module.exports = { Movies };

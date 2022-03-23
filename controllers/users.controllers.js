@@ -36,7 +36,7 @@ exports.getUserById = catchAsync(async(req, res, next) => {
     });
 });
 
-exports.createNewActor = catchAsync(async(req, res, next) => {
+exports.createNewUser = catchAsync(async(req, res, next) => {
     const { username, email, password, role } = req.body;
 
     if (!username || !email || !password) {
@@ -65,7 +65,7 @@ exports.createNewActor = catchAsync(async(req, res, next) => {
     });
 });
 
-exports.deleteActor = catchAsync(async(req, res, next) => {
+exports.deleteUser = catchAsync(async(req, res, next) => {
     const { id } = req.params;
 
     const user = await Users.findOne({
@@ -83,7 +83,24 @@ exports.deleteActor = catchAsync(async(req, res, next) => {
     res.status(204).json({ status: 'success' });
 });
 
-exports.updateUsers = catchAsync(async(req, res, next) => {});
+exports.updateUsers = catchAsync(async(req, res, next) => {
+    const { id } = req.params;
+    const data = filterObj(req.body, 'username', 'email', 'role', 'password');
+
+    const user = await Users.findOne({
+        where: { id: id, status: 'active' }
+    });
+
+    if (!user) {
+        return next(
+            new AppError(404, 'Can\'t update post, maybe invalid ID')
+        );
+    }
+
+    await user.update({...data }); // .update({ title, author })
+
+    res.status(204).json({ status: 'success' });
+});
 
 exports.loginUser = catchAsync(async(req, res, next) => {
     const { email, password } = req.body;

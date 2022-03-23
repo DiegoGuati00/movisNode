@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const { config } = require('../config/config');
 const { promisify } = require('util');
 
 // Models
@@ -31,7 +31,7 @@ exports.validateSession = catchAsync(
         // Verify that token is still valid
         const decodedToken = await promisify(jwt.verify)(
             token,
-            process.env.JWT_SECRET
+            config.JWTsecret
         );
 
         // Validate that the id the token contains belongs to a valid user
