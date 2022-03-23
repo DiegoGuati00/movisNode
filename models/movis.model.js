@@ -38,3 +38,4 @@ const Movis = sequelize.define('movis', {
         defaultValue: 'active'
     }
 })
+module.exports = { Movis };

@@ -34,3 +34,5 @@ const Actors = sequelize.define('actors', {
         defaultValue: 'active'
     }
 })
+
+module.exports = { Actors };
