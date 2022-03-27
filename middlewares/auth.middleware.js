@@ -3,13 +3,12 @@ const { config } = require('../config/config');
 const { promisify } = require('util');
 
 // Models
-const { User } = require('../models/user.model');
+const { Users } = require('../models/users.model');
 
 // Utils
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
 
-dotenv.config({ path: './config.env' });
 
 exports.validateSession = catchAsync(
     async(req, res, next) => {
@@ -36,7 +35,7 @@ exports.validateSession = catchAsync(
 
         // Validate that the id the token contains belongs to a valid user
         // SELECT id, email FROM users;
-        const user = await User.findOne({
+        const user = await Users.findOne({
             where: { id: decodedToken.id, status: 'active' },
             attributes: {
                 exclude: ['password']
@@ -47,9 +46,18 @@ exports.validateSession = catchAsync(
             return next(new AppError(401, 'Invalid session'));
         }
 
-        console.log(user);
+        req.currentUser = user;
 
         // Grant access
         next();
     }
 );
+
+exports.protectAdmin = catchAsync(async(req, res, next) => {
+    if (req.currentUser.role !== 'admin') {
+        return next(new AppError(403, 'Access denied'));
+    }
+
+    // Grant access
+    next();
+});
